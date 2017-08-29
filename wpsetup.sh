@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
 #installation check
 installation_check(){
-	echo "Checking Installed Packages"
+	echo "Checking Installation of $1"
 	dpkg --status $1 >> /dev/null
 	if [ $? -ne 0 ]
 	then
@@ -45,7 +45,16 @@ wordpress_download(){
 	sudo rm -rf wordpress	
 }
 
-installation_check vim
-get_domain_name
-wordpress_download
+#MySQL installation
+
+mysql_installation(){
+	sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password password"
+	sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password password"
+	installation_check mysql-server
+	sudo debconf-communicate mysql-server <<< 'PURGE'
+}
+
+
+
+
 
