@@ -35,8 +35,17 @@ set_nginx_file(){
 	sudo systemctl reload nginx 	
 }
 
+#Download Wordpress 
+wordpress_download(){
+	wget -O wordpress.zip http://wordpress.org/latest.zip
+	unzip -q wordpress.zip
+	rm -f wordpress.zip
+	sudo mkdir /var/www/$domain
+	sudo mv wordpress/* /var/www/$domain
+	sudo rm -rf wordpress	
+}
 
 installation_check vim
 get_domain_name
-
+wordpress_download
 
