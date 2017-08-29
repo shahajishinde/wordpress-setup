@@ -23,9 +23,20 @@ installation_check(){
 
 #domain name entry 
 get_domain_name(){
-	read -p "Enter your desired domain name: " domain_name
-	echo "127.0.0.1         $domain_name" | sudo tee -a  /etc/hosts
+	read -p "Enter your desired domain name: " domain
+	echo "127.0.0.1         $domain" | sudo tee -a  /etc/hosts
 }
+
+#setting up nginx config file for the site
+set_nginx_file(){
+	sudo cp nginx.conf /etc/nginx/sites-available/$domain
+	sudo sed -i "s/domain_name/$domain/g" /etc/nginx/sites-available/$domain
+	sudo ln -s /etc/nginx/sites-available/$domain /etc/nginx/sites-enabled/
+	sudo systemctl reload nginx 	
+}
+
 
 installation_check vim
 get_domain_name
+
+
