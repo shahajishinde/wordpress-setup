@@ -17,8 +17,7 @@ installation_check(){
 		fi
 	else
 		echo "$1 already installed"
-	fi
-	
+	fi	
 }
 
 #domain name entry 
@@ -46,15 +45,32 @@ wordpress_download(){
 }
 
 #MySQL installation
-
 mysql_installation(){
+	#storing temporary root password for mysql
 	sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password password"
 	sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password password"
 	installation_check mysql-server
+	#erasing the saved password
 	sudo debconf-communicate mysql-server <<< 'PURGE'
 }
 
+#Create site default database 
+mysql_create_db(){
+	db_ext="_db"
+	db_name={$domain//./_}$db_ext
+	mysql -u root -p password -e "create database $db_name;"
+}
 
+#Setting Up wp-config.php
+wpconfig-setup(){
+	sudo cp wp-config.php /var/www/$domain/
+	sudo sed -i "s/database_name_here/$db_name/g" /var/www/$domain/wp-config.php
+	sudo sed -i "s/username_here/root/g" /var/www/$domain/wp-config.php
+	sudo sed -i "s/password_here/password/g" /var/www/$domain/wp-config.php
+}
 
+installation_check php7.0-fpm
+installation_check php-mysql
+installation_check 
 
 
