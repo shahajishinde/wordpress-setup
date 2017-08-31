@@ -8,7 +8,7 @@ installation_check(){
 	then
 		echo "Installing $1"
 		sudo apt-get install $1
-		if [ $? -e 0 ]
+		if [ $? -eq 0 ]
 		then
 			echo "Successfully Installed $1"
 		else
@@ -22,12 +22,13 @@ installation_check(){
 
 #domain name entry 
 get_domain_name(){
-	read -p "Enter your desired domain name: " domain
+	read -p "Enter Domain Name: " domain
 	echo "127.0.0.1         $domain" | sudo tee -a  /etc/hosts
 }
 
 #setting up nginx config file for the site
 set_nginx_file(){
+	echo "Setting up nginx config file for your site"
 	sudo cp nginx.conf /etc/nginx/sites-available/$domain
 	sudo sed -i "s/domain_name/$domain/g" /etc/nginx/sites-available/$domain
 	sudo ln -s /etc/nginx/sites-available/$domain /etc/nginx/sites-enabled/
@@ -36,9 +37,10 @@ set_nginx_file(){
 
 #Download Wordpress 
 wordpress_download(){
-	wget -O wordpress.zip http://wordpress.org/latest.zip
-	unzip -q wordpress.zip
-	rm -f wordpress.zip
+	echo "Downloading Wordpress"
+	sudo wget -O wordpress.zip http://wordpress.org/latest.zip
+	sudo unzip -q wordpress.zip
+	sudo rm -f wordpress.zip
 	sudo mkdir /var/www/$domain
 	sudo mv wordpress/* /var/www/$domain
 	sudo rm -rf wordpress	
@@ -56,13 +58,15 @@ mysql_installation(){
 
 #Create site default database 
 mysql_create_db(){
+	echo "Creating database for your site"
 	db_ext="_db"
-	db_name={$domain//./_}$db_ext
-	mysql -u root -p password -e "create database $db_name;"
+	db_name=${domain//./_}$db_ext
+	mysql -u root -ppassword -e "create database $db_name;"
 }
 
 #Setting Up wp-config.php
-wpconfig-setup(){
+wpconfig_setup(){
+	echo "Setting up the wp-config.php file"
 	sudo cp wp-config.php /var/www/$domain/
 	sudo sed -i "s/database_name_here/$db_name/g" /var/www/$domain/wp-config.php
 	sudo sed -i "s/username_here/root/g" /var/www/$domain/wp-config.php
@@ -71,6 +75,13 @@ wpconfig-setup(){
 
 installation_check php7.0-fpm
 installation_check php-mysql
-installation_check 
+installation_check nginx
+mysql_installation
+get_domain_name
+set_nginx_file
+wordpress_download
+mysql_create_db
+wpconfig_setup
+
 
 
