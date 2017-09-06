@@ -24,6 +24,13 @@ installation_check(){
 get_domain_name(){
 	read -p "Enter Domain Name: " domain
 	echo "127.0.0.1         $domain" | sudo tee -a  /etc/hosts
+	if [ $? -eq 0 ]
+	then
+		echo "Domain name entry successful"
+	else
+		echo "Error occured while creating domain name entry"
+		exit 1
+	fi
 }
 
 #setting up nginx config file for the site
@@ -32,8 +39,17 @@ set_nginx_file(){
 	sudo cp nginx.conf /etc/nginx/sites-available/$domain
 	sudo sed -i "s/domain_name/$domain/g" /etc/nginx/sites-available/$domain
 	sudo ln -s /etc/nginx/sites-available/$domain /etc/nginx/sites-enabled/
-	sudo systemctl reload nginx 	
+
+	if [ $? -eq 0 ]
+	then	
+		echo "Successfully set up nginx config file"
+		sudo systemctl reload nginx
+	else
+		echo "Some error occured during nginx configuration"
+		exit 1
+	fi
 }
+
 
 #Download Wordpress 
 wordpress_download(){
@@ -44,6 +60,7 @@ wordpress_download(){
 	sudo mkdir /var/www/$domain
 	sudo mv wordpress/* /var/www/$domain
 	sudo rm -rf wordpress	
+	echo "Successfully downloaded Wordpress"
 }
 
 #MySQL installation
@@ -62,6 +79,7 @@ mysql_create_db(){
 	db_ext="_db"
 	db_name=${domain//./_}$db_ext
 	mysql -u root -ppassword -e "create database $db_name;"
+	echo "Database Created"
 }
 
 #Setting Up wp-config.php
@@ -71,6 +89,7 @@ wpconfig_setup(){
 	sudo sed -i "s/database_name_here/$db_name/g" /var/www/$domain/wp-config.php
 	sudo sed -i "s/username_here/root/g" /var/www/$domain/wp-config.php
 	sudo sed -i "s/password_here/password/g" /var/www/$domain/wp-config.php
+	echo "Done setting up wp-config.php file"
 }
 
 installation_check php7.0-fpm
@@ -84,4 +103,6 @@ mysql_create_db
 wpconfig_setup
 
 
-
+echo "Database username: root"
+echo "Database password: password"
+echo "Open your site "$domain" in the browser"
