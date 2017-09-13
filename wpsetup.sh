@@ -55,6 +55,7 @@ set_nginx_file(){
 wordpress_download(){
 	echo "Downloading Wordpress"
 	sudo wget -O wordpress.zip http://wordpress.org/latest.zip
+	installation_check unzip
 	sudo unzip -q wordpress.zip
 	sudo rm -f wordpress.zip
 	sudo mkdir /var/www/$domain
