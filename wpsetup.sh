@@ -7,7 +7,7 @@ installation_check(){
 	if [ $? -ne 0 ]
 	then
 		echo "Installing $1"
-		sudo apt-get install $1
+		sudo apt-get install $1 -y
 		if [ $? -eq 0 ]
 		then
 			echo "Successfully Installed $1"
