@@ -93,6 +93,10 @@ wpconfig_setup(){
 	echo "Done setting up wp-config.php file"
 }
 
+#update package-list 
+sudo apt-get update
+
+
 installation_check php7.0-fpm
 installation_check php-mysql
 installation_check nginx
