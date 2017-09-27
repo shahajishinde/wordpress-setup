@@ -98,7 +98,9 @@ wpconfig_setup(){
 
 #update package-list 
 echo "Removing old logs..."
-rm -rf logs/
+cd logs
+rm *.log >> /dev/null
+cd ..
 echo "Updating system. This may take time..."
 sudo apt-get update &>> $installlog
 installation_check php7.0-fpm
@@ -110,7 +112,6 @@ set_nginx_file
 wordpress_download
 mysql_create_db
 wpconfig_setup
-mkdir logs
 mv *.log logs/
 echo "Website Root Directory: /var/www/$domain"
 echo "Database Username: root"
