@@ -97,6 +97,8 @@ wpconfig_setup(){
 }
 
 #update package-list 
+echo "Removing old logs..."
+rm -rf logs/
 echo "Updating system. This may take time..."
 sudo apt-get update &>> $installlog
 
