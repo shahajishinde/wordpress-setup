@@ -101,8 +101,6 @@ echo "Removing old logs..."
 rm -rf logs/
 echo "Updating system. This may take time..."
 sudo apt-get update &>> $installlog
-
-
 installation_check php7.0-fpm
 installation_check php-mysql
 installation_check nginx
@@ -112,9 +110,9 @@ set_nginx_file
 wordpress_download
 mysql_create_db
 wpconfig_setup
-
 mkdir logs
 mv *.log logs/
-echo "Database username: root"
-echo "Database password: password"
-echo "Open your site "$domain" in the browser"
+echo "Website Root Directory: /var/www/$domain"
+echo "Database Username: root"
+echo "Database Password: password"
+echo "Open your site "http://$domain" in the browser.(Hold 'ctrl' and click the link)"
