@@ -57,7 +57,14 @@ set_nginx_file(){
 #Download Wordpress 
 wordpress_download(){
 	echo "Downloading Wordpress..."
-	sudo wget -O wordpress.zip http://wordpress.org/latest.zip &>> $wplog
+	sudo wget -O wordpress.zip http://wordpress.org/latest.zip &>> $wplog 
+	if [ $? -ne 0 ]
+	then
+		echo "Error while downloading Wordpress. Check your Network Connection."
+		exit 1
+	else
+		echo "Done"
+	fi
 	installation_check unzip
 	sudo unzip -q wordpress.zip &>> $wplog
 	sudo rm -f wordpress.zip
@@ -98,9 +105,7 @@ wpconfig_setup(){
 
 #update package-list 
 echo "Removing old logs..."
-cd logs
-rm *.log >> /dev/null
-cd ..
+rm logs/*.log >> /dev/null
 echo "Updating system. This may take time..."
 sudo apt-get update &>> $installlog
 installation_check php7.0-fpm
