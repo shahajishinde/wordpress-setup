@@ -1,8 +1,8 @@
 #!/bin/bash
-wplog=wordpress.log
-mysqllog=mysql.log
-nginxlog=nginx.log
-installlog=installation.log
+wplog=logs/wordpress.log
+mysqllog=logs/mysql.log
+nginxlog=logs/nginx.log
+installlog=logs/installation.log
 #installation check
 installation_check(){
 	echo "Checking Installation of $1..."
@@ -117,7 +117,7 @@ set_nginx_file
 wordpress_download
 mysql_create_db
 wpconfig_setup
-mv *.log logs/
+
 echo "Website Root Directory: /var/www/$domain"
 echo "Database Username: root"
 echo "Database Password: password"
